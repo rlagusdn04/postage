@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-
+//편지
 function LetterCompose({ characterId, onSend, tutorialMode }) {
   const [content, setContent] = useState("");
 
