@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { collection, getDocs, doc, updateDoc, orderBy, query } from "firebase/firestore";
 import { db } from "../firebase";
+import "./LetterInbox.css";
 
 function LetterInbox({ userId, characterId, onReply }) {
   const [messages, setMessages] = useState([]);
@@ -30,31 +31,75 @@ function LetterInbox({ userId, characterId, onReply }) {
     }
   };
 
-  if (loading) return <div>편지 불러오는 중...</div>;
-  if (messages.length === 0) return <div>받은 편지가 없습니다.</div>;
+  if (loading) {
+    return (
+      <div className="letter-loading">
+        <div className="loading-spinner"></div>
+        <p>편지를 불러오는 중...</p>
+      </div>
+    );
+  }
+  
+  if (messages.length === 0) {
+    return (
+      <div className="empty-inbox">
+        <div className="empty-icon">📭</div>
+        <p>받은 편지가 없습니다.</p>
+      </div>
+    );
+  }
 
   return (
-    <div>
-      <h2>받은 편지함</h2>
-      <ul>
+    <div className="letter-inbox">
+      <h3 className="inbox-title">📬 받은 편지함</h3>
+      
+      <div className="letter-list">
         {messages.map(msg => (
-          <li
+          <div
             key={msg.id}
-            style={{ cursor: "pointer", fontWeight: msg.read ? "normal" : "bold" }}
+            className={`letter-item ${selectedId === msg.id ? 'selected' : ''} ${!msg.read ? 'unread' : ''}`}
             onClick={() => handleSelect(msg.id, msg.read)}
           >
-            {msg.id.startsWith("received_") ? "[받음]" : "[보냄]"} {msg.content.slice(0, 20)}...
-          </li>
+            <div className="letter-header">
+              <span className="letter-type">
+                {msg.id.startsWith("received_") ? "📥 받은 편지" : "📤 보낸 편지"}
+              </span>
+              <span className="letter-time">
+                {msg.timestamp?.toDate ? 
+                  msg.timestamp.toDate().toLocaleDateString() : 
+                  new Date().toLocaleDateString()
+                }
+              </span>
+            </div>
+            <div className="letter-preview">
+              {msg.content.slice(0, 50)}...
+            </div>
+            {!msg.read && <div className="unread-indicator"></div>}
+          </div>
         ))}
-      </ul>
+      </div>
+      
       {selectedId && (
-        <div style={{ border: "1px solid #ccc", marginTop: 16, padding: 12 }}>
-          <h3>편지 내용</h3>
-          <p>{messages.find(m => m.id === selectedId)?.content}</p>
-          {/* 답장 버튼: 받은 편지에만 노출, 이미 답장한 경우 비활성화(여기선 단순화) */}
+        <div className="letter-detail">
+          <div className="detail-header">
+            <h4>📄 편지 내용</h4>
+            <button 
+              className="close-detail-btn"
+              onClick={() => setSelectedId(null)}
+            >
+              ✕
+            </button>
+          </div>
+          <div className="letter-content">
+            {messages.find(m => m.id === selectedId)?.content}
+          </div>
+          {/* 답장 버튼: 받은 편지에만 노출 */}
           {messages.find(m => m.id === selectedId)?.id.startsWith("received_") && (
-            <button onClick={() => onReply(messages.find(m => m.id === selectedId))}>
-              답장하기
+            <button 
+              className="reply-btn"
+              onClick={() => onReply(messages.find(m => m.id === selectedId))}
+            >
+              💌 답장하기
             </button>
           )}
         </div>

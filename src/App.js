@@ -6,6 +6,7 @@ import CharacterSelect from "./components/CharacterSelect";
 import { auth, db } from "./firebase";
 import { onAuthStateChanged } from "firebase/auth";
 import { doc, getDoc } from "firebase/firestore";
+import "./App.css";
 
 function App() {
   const [user, setUser] = useState(null);
@@ -45,7 +46,17 @@ function App() {
     }
   };
 
-  if (loading) return <div>로딩 중...</div>;
+  if (loading) {
+    return (
+      <div className="loading-container">
+        <div className="loading-card">
+          <div className="loading-spinner-large"></div>
+          <h2 className="loading-text">Postage</h2>
+          <p className="loading-subtext">로딩 중...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <Router>
