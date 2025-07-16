@@ -8,8 +8,8 @@ import "./Tutorial.css";
 
 const DANPOONG_ID = "danpoong";
 
-// 단풍의 메시지들 (순서대로)
-const DANPOONG_MESSAGES = [
+// 단풍의 메시지 템플릿들 (순서대로)
+const DANPOONG_MESSAGE_TEMPLATES = [
   `from 🍁
 
 안녕.
@@ -21,39 +21,36 @@ const DANPOONG_MESSAGES = [
 
 기다릴게.`,
 
-  `from 🍁
+  (nickname) => `from 🍁
 
-To. ${userData?.nickname || "친구"}
+To. ${nickname}
 
 첫 편지를 받아서 정말 기뻐.
-네가 어떤 사람인지 궁금해.
+네가 어떤 사람인지 조금은 알 것 같아.
 
 오늘은 바람이 불어서 나뭇잎들이 춤을 추고 있어.
-너도 이런 작은 것들에 행복을 느끼는 사람인가?
+너도 이런 작은 것들에 행복을 느끼니?
 
 조금 더 알고 싶어.`,
 
-  `from 🍁
+  (nickname) => `from 🍁
 
-To. ${userData?.nickname || "친구"}
+To. ${nickname}
 
-네 이야기를 들으니 마음이 따뜻해져.
-사람과 사람이 이렇게 마음을 나눌 수 있다는 게 신기해.
-
-내가 떠나기 전에 이런 소중한 순간을 만들어줘서 고마워.
-네가 있어서 이 가을이 더욱 특별해졌어.
+네 이야기를 듣다보니 어느새 단풍이 졌네.
+이런 소중한 순간을 만들어줘서 고마워.
+네가 있어서 이 순간이 더욱 특별해졌어.
 
 언젠가 다시 만날 수 있을까?`,
 
-  `from 🍁
+  (nickname) => `from 🍁
 
-To. ${userData?.nickname || "친구"}
+To. ${nickname}
 
-편지 쓰는 재미를 느끼셨나요? 💌
-이제 튜토리얼이 끝났어요!
 
-다른 캐릭터들과도 편지를 주고받아보세요.
-각각 다른 매력과 이야기를 가지고 있을 거예요.
+누군가 겨울을 끝이라고 부르던 기억이 나.
+너도 그렇게 생각하니?
+낙엽이 떨어졌던 자리에 네가 남긴 편지들도 쌓이기를 바랄게.
 
 고마웠어. 안녕!`
 ];
@@ -75,7 +72,7 @@ function Tutorial({ user, userData, onComplete }) {
         const letterId = `received_${Date.now()}`;
         await setDoc(doc(msgsRef, letterId), {
           type: "received",
-          content: DANPOONG_MESSAGES[0],
+          content: DANPOONG_MESSAGE_TEMPLATES[0],
           timestamp: serverTimestamp(),
           read: false,
           messageIndex: 0,
@@ -90,13 +87,14 @@ function Tutorial({ user, userData, onComplete }) {
     const msgsRef = collection(db, "users", user.uid, "interactions", DANPOONG_ID, "messages");
     const nextIndex = currentMessageIndex + 1;
     
-    if (nextIndex < DANPOONG_MESSAGES.length) {
+    if (nextIndex < DANPOONG_MESSAGE_TEMPLATES.length) {
       const letterId = `received_${Date.now()}`;
-      // 사용자 닉네임을 포함한 메시지 생성
-      const messageContent = DANPOONG_MESSAGES[nextIndex].replace(
-        /\${userData\?\.nickname \|\| "친구"}/g, 
-        userData?.nickname || "친구"
-      );
+      
+      // 메시지 템플릿에서 실제 메시지 생성
+      const template = DANPOONG_MESSAGE_TEMPLATES[nextIndex];
+      const messageContent = typeof template === 'function' 
+        ? template(userData?.nickname || "친구")
+        : template;
       
       await setDoc(doc(msgsRef, letterId), {
         type: "received",
@@ -108,7 +106,7 @@ function Tutorial({ user, userData, onComplete }) {
       setCurrentMessageIndex(nextIndex);
       
       // 마지막 메시지인 경우 튜토리얼 완료
-      if (nextIndex === DANPOONG_MESSAGES.length - 1) {
+      if (nextIndex === DANPOONG_MESSAGE_TEMPLATES.length - 1) {
         setTimeout(() => {
           completeTutorial();
         }, 2000);
@@ -173,7 +171,7 @@ function Tutorial({ user, userData, onComplete }) {
     <div className="tutorial-container">
       <div className="tutorial-header">
         <div className="header-content">
-          <h2>튜토리얼: 단풍과의 편지 교환</h2>
+          <h2>🍁</h2>
           <p className="tutorial-subtitle">편지를 읽고 답장해보세요! ({currentMessageIndex + 1}/3)</p>
         </div>
         <button className="logout-btn" onClick={handleLogout}>
@@ -187,10 +185,9 @@ function Tutorial({ user, userData, onComplete }) {
           <div className="guide-card">
             <h3>📝 튜토리얼 가이드</h3>
             <ul>
-              <li>받은 편지를 클릭하여 내용을 확인하세요</li>
+              <li>새로 고침 후 받은 편지를 클릭하여 내용을 확인하세요</li>
               <li>"답장하기" 버튼을 눌러 답장을 작성하세요</li>
-              <li>단풍이 자동으로 답장해드릴 거예요!</li>
-              <li>3번의 편지 교환 후 튜토리얼이 완료됩니다</li>
+              <li>다양한 편지가 매일 도착할 거예요!</li>
             </ul>
             <button 
               className="guide-close-btn"
