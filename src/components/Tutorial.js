@@ -37,7 +37,7 @@ To. ${nickname}
 
 To. ${nickname}
 
-네 이야기를 듣다보니 어느새 단풍이 졌네.
+네 이야기를 듣다보니 어느새 시간이 이렇게 흘렀네.
 이런 소중한 순간을 만들어줘서 고마워.
 네가 있어서 이 순간이 더욱 특별해졌어.
 
@@ -50,7 +50,8 @@ To. ${nickname}
 
 누군가 겨울을 끝이라고 부르던 기억이 나.
 너도 그렇게 생각하니?
-낙엽이 떨어졌던 자리에 네가 남긴 편지들도 쌓이기를 바랄게.
+어찌됐든 때가 되면 낙엽은 나무를 위해서 져야만해,
+그 자리에 네가 남긴 편지들도 쌓이기를 바랄게.
 
 고마웠어. 안녕!`
 ];
@@ -145,7 +146,6 @@ function Tutorial({ user, userData, onComplete }) {
   const completeTutorial = async () => {
     await updateDoc(doc(db, "users", user.uid), { tutorialDone: true });
     setStep(3);
-    if (onComplete) onComplete();
   };
 
   if (step === 3) {
@@ -156,12 +156,7 @@ function Tutorial({ user, userData, onComplete }) {
           <h2>튜토리얼 완료!</h2>
           <p>단풍과의 편지 교환이 완료되었습니다.</p>
           <p>이제 다른 캐릭터들과도 편지를 주고받아보세요!</p>
-          <div className="loading-dots">
-            <span></span>
-            <span></span>
-            <span></span>
-          </div>
-          <p className="redirect-text">캐릭터 선택 화면으로 이동 중...</p>
+          <p className="redirect-text">페이지를 새로고침하여 계속 진행해주세요.</p>
         </div>
       </div>
     );

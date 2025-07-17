@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { collection, getDocs, doc, updateDoc, orderBy, query } from "firebase/firestore";
+import { collection, onSnapshot, doc, updateDoc, orderBy, query } from "firebase/firestore";
 import { db } from "../firebase";
 import "./LetterInbox.css";
 
@@ -8,17 +8,24 @@ function LetterInbox({ userId, characterId, onReply }) {
   const [selectedId, setSelectedId] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // 편지 목록 불러오기
+  // 편지 목록 실시간 불러오기
   useEffect(() => {
-    const fetchMessages = async () => {
-      setLoading(true);
-      const msgsRef = collection(db, "users", userId, "interactions", characterId, "messages");
-      const q = query(msgsRef, orderBy("timestamp", "asc"));
-      const snapshot = await getDocs(q);
+    if (!userId || !characterId) return;
+
+    setLoading(true);
+    const msgsRef = collection(db, "users", userId, "interactions", characterId, "messages");
+    const q = query(msgsRef, orderBy("timestamp", "asc"));
+
+    const unsubscribe = onSnapshot(q, (snapshot) => {
       setMessages(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
       setLoading(false);
-    };
-    if (userId && characterId) fetchMessages();
+    }, (error) => {
+      console.error("편지 실시간 불러오기 실패:", error);
+      setLoading(false);
+    });
+
+    // 컴포넌트 언마운트 시 리스너 정리
+    return () => unsubscribe();
   }, [userId, characterId]);
 
   // 편지 클릭 시 읽음 처리
@@ -27,7 +34,8 @@ function LetterInbox({ userId, characterId, onReply }) {
     if (!read) {
       const msgRef = doc(db, "users", userId, "interactions", characterId, "messages", id);
       await updateDoc(msgRef, { read: true });
-      setMessages(msgs => msgs.map(m => m.id === id ? { ...m, read: true } : m));
+      // onSnapshot이 자동으로 업데이트하므로 아래 줄은 필요 없음
+      // setMessages(msgs => msgs.map(m => m.id === id ? { ...m, read: true } : m));
     }
   };
 

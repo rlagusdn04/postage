@@ -1,9 +1,11 @@
-import React from "react";
+import React, { useState } from "react";
 import { signOut } from "firebase/auth";
 import { auth } from "../firebase";
 import "./CharacterSelect.css";
 
-function CharacterSelect({ user, userData }) {
+function CharacterSelect({ user, userData, onCharacterSelect }) {
+  const [selectedCharacter, setSelectedCharacter] = useState(null);
+
   const handleLogout = async () => {
     try {
       await signOut(auth);
@@ -14,12 +16,19 @@ function CharacterSelect({ user, userData }) {
     }
   };
 
+  const handleCharacterSelect = (characterId) => {
+    setSelectedCharacter(characterId);
+    if (onCharacterSelect) {
+      onCharacterSelect(characterId);
+    }
+  };
+
   return (
     <div className="character-select-container">
       <div className="header">
         <div className="user-info">
-          <h2>캐릭터 선택</h2>
-          <p className="welcome-text">{userData?.nickname}님, 환영합니다!</p>
+          <h2>편지 친구 선택</h2>
+          <p className="welcome-text">{userData?.nickname}님, 누구와 편지를 나누고 싶으신가요?</p>
         </div>
         <button className="logout-btn" onClick={handleLogout}>
           <span className="logout-icon">🚪</span>
@@ -32,29 +41,66 @@ function CharacterSelect({ user, userData }) {
           <div className="character-card">
             <div className="character-avatar">🍁</div>
             <h3>단풍</h3>
-            <p>따뜻한 가을의 정취를 담은 캐릭터</p>
-            <button className="select-btn">선택하기</button>
+            <p className="character-quote">"단풍"</p>
+            <p className="character-description">왠지 답신이 없을 것 같은 기분이 든다.</p>
+            <button 
+              className="select-btn"
+              onClick={() => handleCharacterSelect('danpoong')}
+            >
+              편지 시작하기
+            </button>
           </div>
           
           <div className="character-card">
-            <div className="character-avatar">🌸</div>
-            <h3>벚꽃</h3>
-            <p>봄의 아름다움을 담은 캐릭터</p>
-            <button className="select-btn">선택하기</button>
+            <div className="character-avatar">🎭</div>
+            <h3>Chet</h3>
+            <p className="character-quote">"Chet"</p>
+            <p className="character-description">매 순간을 선물이라 여겨야 해</p>
+            <button 
+              className="select-btn"
+              onClick={() => handleCharacterSelect('chet')}
+            >
+              편지 시작하기
+            </button>
           </div>
           
           <div className="character-card">
-            <div className="character-avatar">❄️</div>
-            <h3>눈송이</h3>
-            <p>겨울의 신비로움을 담은 캐릭터</p>
-            <button className="select-btn">선택하기</button>
+            <div className="character-avatar">🫨</div>
+            <h3>김현우</h3>
+            <p className="character-quote">?</p>
+            <p className="character-description">"그래도 편지를 보내보세요."</p>
+            <button 
+              className="select-btn"
+              onClick={() => handleCharacterSelect('hyunwoo')}
+            >
+              편지 시작하기
+            </button>
           </div>
-          
+
           <div className="character-card">
-            <div className="character-avatar">🌻</div>
-            <h3>해바라기</h3>
-            <p>여름의 활기찬 에너지를 담은 캐릭터</p>
-            <button className="select-btn">선택하기</button>
+            <div className="character-avatar">👨</div>
+            <h3>상순</h3>
+            <p className="character-quote">"돈 벌 방법 어디 없소?"</p>
+            <p className="character-description">囊中之錐.</p>
+            <button 
+              className="select-btn"
+              onClick={() => handleCharacterSelect('sangsoon')}
+            >
+              편지 시작하기
+            </button>
+          </div>
+
+          <div className="character-card">
+            <div className="character-avatar"></div>
+            <h3>김홍아</h3>
+            <p className="character-quote">수신인 불명</p>
+            <p className="character-description">집을 자주 비웁니다</p>
+            <button 
+              className="select-btn"
+              onClick={() => handleCharacterSelect('honga')}
+            >
+              편지 시작하기
+            </button>
           </div>
         </div>
       </div>

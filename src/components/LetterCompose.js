@@ -36,8 +36,8 @@ function LetterCompose({ userId, characterId, replyTo, onSent }) {
     return (
       <div className="compose-sent">
         <div className="sent-icon">✉️</div>
-        <h3>답장이 전송되었습니다!</h3>
-        <p>단풍이 곧 답장해드릴 거예요.</p>
+        <h3>편지가 전송되었습니다!</h3>
+        <p>곧 답장이 올거에요.</p>
       </div>
     );
   }
