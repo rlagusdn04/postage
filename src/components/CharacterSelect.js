@@ -102,6 +102,32 @@ function CharacterSelect({ user, userData, onCharacterSelect }) {
               편지 시작하기
             </button>
           </div>
+
+          <div className="character-card">
+            <div className="character-avatar">☕</div>
+            <h3>Coffee</h3>
+            <p className="character-quote">"흥미로운 기사를 작성해주는 기자"</p>
+            <p className="character-description">매일 편지를 보내줍니다.</p>
+            <button 
+              className="select-btn"
+              onClick={() => handleCharacterSelect('coffee')}
+            >
+              편지 시작하기
+            </button>
+          </div>
+
+          <div className="character-card">
+            <div className="character-avatar">😠</div>
+            <h3>Sen</h3>
+            <p className="character-quote">"그래서 하고 싶은 말이 뭔데?"</p>
+            <p className="character-description">당신은 이 사람을 모릅니다.</p>
+            <button 
+              className="select-btn"
+              onClick={() => handleCharacterSelect('sen')}
+            >
+              편지 시작하기
+            </button>
+          </div>
         </div>
       </div>
     </div>
