@@ -4,7 +4,6 @@ import Login from "./components/Login";
 import Tutorial from "./components/Tutorial";
 import CharacterSelect from "./components/CharacterSelect";
 import LetterSystem from "./components/LetterSystem";
-import AnonymousMatching from "./components/AnonymousMatching";
 import RandomInbox from "./components/RandomInbox";
 import { auth, db } from "./firebase";
 import { onAuthStateChanged } from "firebase/auth";
@@ -111,11 +110,12 @@ function App() {
             } />
           ) : isRandomMatching ? (
             <Route path="*" element={
-              <AnonymousMatching 
+              <LetterSystem 
                 user={user} 
                 userData={userData} 
-                onMatchComplete={handleRandomMatchComplete}
-                onCancel={handleRandomMatchCancel}
+                characterId={selectedCharacter}
+                onBack={handleBackToCharacterSelect}
+                currentMatch={currentMatch}
               />
             } />
           ) : selectedCharacter ? (

@@ -5,7 +5,6 @@ import { auth, db } from "../firebase";
 import LetterInbox from "./LetterInbox";
 import LetterCompose from "./LetterCompose";
 import DeveloperPanel from "./DeveloperPanel"; // DeveloperPanel import
-import AnonymousMatching from "./AnonymousMatching"; // 익명 매칭 컴포넌트 추가
 import "./LetterSystem.css";
 
 // 캐릭터별 답장 주기 (밀리초)

@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import { collection, onSnapshot, doc, updateDoc, orderBy, query, setDoc, serverTimestamp, getDoc } from "firebase/firestore";
 import { db } from "../firebase";
 import "./RandomInbox.css";
-import "./AnonymousMatching.css";
 import { useNavigate } from "react-router-dom";
 
 function RandomInbox({ user, onWriteNewLetter, onBack }) {
@@ -15,12 +14,9 @@ function RandomInbox({ user, onWriteNewLetter, onBack }) {
   const [sending, setSending] = useState(false);
   const navigate = useNavigate();
 
+  // 돌아가기 버튼 핸들러
   const handleBack = () => {
-    if (onBack && typeof onBack === "function") {
-      onBack();
-    } else {
-      navigate("/");
-    }
+    navigate("/");
   };
 
   // 랜덤 편지함 실시간 불러오기
@@ -107,9 +103,8 @@ function RandomInbox({ user, onWriteNewLetter, onBack }) {
   return (
     <div className="random-inbox-container">
       <button
-        className="back-btn"
+        className="random-back-btn"
         onClick={handleBack}
-        style={{ marginBottom: 16 }}
       >
         ← 돌아가기
       </button>
@@ -184,30 +179,44 @@ function RandomInbox({ user, onWriteNewLetter, onBack }) {
       )}
       {showCompose && (
         <div className="random-inbox-compose-modal">
-          <div className="random-inbox-compose">
-            <h4>{composeTarget ? "💌 답장 작성" : "✍️ 새 편지 작성"}</h4>
-            {composeTarget && (
-              <div className="reply-preview">
-                <span>답장 대상:</span>
-                <div className="reply-content">{composeTarget.content.slice(0, 40)}...</div>
+          <div className="letter-compose">
+            <div className="compose-header">
+              <h3>{composeTarget ? "💌 답장 작성" : "💌 편지 작성"}</h3>
+              {composeTarget && (
+                <div className="reply-to">
+                  <span>답장 대상:</span>
+                  <div className="reply-preview">{composeTarget.content.slice(0, 40)}...</div>
+                </div>
+              )}
+            </div>
+            <div className="compose-form">
+              <textarea
+                value={composeContent}
+                onChange={e => setComposeContent(e.target.value)}
+                placeholder={composeTarget ? "답장 내용을 입력하세요... (Ctrl+Enter로 전송)" : "메시지를 입력하세요... (Ctrl+Enter로 전송)"}
+                className="compose-textarea"
+                rows={6}
+                maxLength={500}
+                disabled={sending}
+                onKeyPress={e => { if (e.key === 'Enter' && e.ctrlKey) handleSend(); }}
+              />
+              <div className="compose-footer">
+                <span className="char-count">{composeContent.length}/500</span>
+                <button
+                  className="send-btn"
+                  onClick={handleSend}
+                  disabled={!composeContent.trim() || sending}
+                >
+                  {sending ? (<><div className="sending-spinner"></div>전송 중...</>) : (composeTarget ? "📤 답장 보내기" : "📤 메시지 보내기")}
+                </button>
+                <button
+                  className="random-inbox-cancel-btn"
+                  onClick={() => setShowCompose(false)}
+                  disabled={sending}
+                >
+                  취소
+                </button>
               </div>
-            )}
-            <textarea
-              value={composeContent}
-              onChange={e => setComposeContent(e.target.value)}
-              placeholder="편지 내용을 입력하세요..."
-              rows={7}
-              maxLength={500}
-              disabled={sending}
-            />
-            <div className="random-inbox-compose-footer">
-              <span className="random-inbox-char-count">{composeContent.length}/500</span>
-              <button className="random-inbox-send-btn" onClick={handleSend} disabled={!composeContent.trim() || sending}>
-                {sending ? "전송 중..." : "📮 편지 보내기"}
-              </button>
-              <button className="random-inbox-cancel-btn" onClick={() => setShowCompose(false)} disabled={sending}>
-                취소
-              </button>
             </div>
           </div>
         </div>
