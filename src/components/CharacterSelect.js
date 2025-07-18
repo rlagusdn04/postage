@@ -91,15 +91,15 @@ function CharacterSelect({ user, userData, onCharacterSelect }) {
           </div>
 
           <div className="character-card">
-            <div className="character-avatar"></div>
-            <h3>김홍아</h3>
-            <p className="character-quote">수신인 불명</p>
-            <p className="character-description">집을 자주 비웁니다</p>
+            <div className="character-avatar">🤝</div>
+            <h3>랜덤 편지</h3>
+            <p className="character-quote">"수신인 불명"</p>
+            <p className="character-description">서로를 모르는 사람과 편지를 주고받아보세요</p>
             <button 
               className="select-btn"
-              onClick={() => handleCharacterSelect('honga')}
+              onClick={() => handleCharacterSelect('random_matching')}
             >
-              편지 시작하기
+              편지 작성하기
             </button>
           </div>
 

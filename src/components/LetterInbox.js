@@ -4,6 +4,7 @@ import { db } from "../firebase";
 import "./LetterInbox.css";
 
 function LetterInbox({ userId, characterId, onReply }) {
+  const isRandomMatching = characterId?.startsWith('random_');
   const [messages, setMessages] = useState([]);
   const [selectedId, setSelectedId] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -51,31 +52,41 @@ function LetterInbox({ userId, characterId, onReply }) {
   if (messages.length === 0) {
     return (
       <div className="empty-inbox">
-        <div className="empty-icon">📭</div>
-        <p>받은 편지가 없습니다.</p>
+        <div className="empty-icon">{isRandomMatching ? "💌" : "📭"}</div>
+        <p>{isRandomMatching ? "아직 편지가 없습니다. 편지 작성하기 버튼을 눌러 첫 편지를 보내보세요!" : "받은 편지가 없습니다."}</p>
       </div>
     );
   }
 
   return (
     <div className="letter-inbox">
-      <h3 className="inbox-title">📬 받은 편지함</h3>
+      <h3 className="inbox-title">
+        {isRandomMatching ? "💬 대화" : "📬 받은 편지함"}
+      </h3>
       
       <div className="letter-list">
         {messages.map(msg => (
           <div
             key={msg.id}
-            className={`letter-item ${selectedId === msg.id ? 'selected' : ''} ${!msg.read ? 'unread' : ''}`}
+            className={`letter-item ${selectedId === msg.id ? 'selected' : ''} ${!msg.read ? 'unread' : ''} ${isRandomMatching ? 'random-message' : ''}`}
             onClick={() => handleSelect(msg.id, msg.read)}
           >
             <div className="letter-header">
               <span className="letter-type">
-                {msg.id.startsWith("received_") ? "📥 받은 편지" : "📤 보낸 편지"}
+                {isRandomMatching ? (
+                  msg.type === "system" ? "🔔 시스템" :
+                  msg.senderId === userId ? "📤 내 편지" : "📥 받은 편지"
+                ) : (
+                  msg.id.startsWith("received_") ? "📥 받은 편지" : "📤 보낸 편지"
+                )}
               </span>
+              {isRandomMatching && msg.senderId && msg.senderId !== userId && (
+                <span className="sender-name">{msg.senderNickname || "익명"}</span>
+              )}
               <span className="letter-time">
                 {msg.timestamp?.toDate ? 
-                  msg.timestamp.toDate().toLocaleDateString() : 
-                  new Date().toLocaleDateString()
+                  msg.timestamp.toDate().toLocaleString() : 
+                  new Date().toLocaleString()
                 }
               </span>
             </div>
@@ -101,13 +112,13 @@ function LetterInbox({ userId, characterId, onReply }) {
           <div className="letter-content">
             {messages.find(m => m.id === selectedId)?.content}
           </div>
-          {/* 답장 버튼: 받은 편지에만 노출 */}
-          {messages.find(m => m.id === selectedId)?.id.startsWith("received_") && (
+          {/* 답장 버튼: 받은 편지에만 노출 (랜덤 매칭에서는 모든 메시지에 답장 가능) */}
+          {(isRandomMatching || messages.find(m => m.id === selectedId)?.id.startsWith("received_")) && (
             <button 
               className="reply-btn"
               onClick={() => onReply(messages.find(m => m.id === selectedId))}
             >
-              💌 답장하기
+              {isRandomMatching ? "💬 답장하기" : "💌 답장하기"}
             </button>
           )}
         </div>

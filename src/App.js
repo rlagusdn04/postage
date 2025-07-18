@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Login from "./components/Login";
 import Tutorial from "./components/Tutorial";
 import CharacterSelect from "./components/CharacterSelect";
 import LetterSystem from "./components/LetterSystem";
+import AnonymousMatching from "./components/AnonymousMatching";
+import RandomInbox from "./components/RandomInbox";
 import { auth, db } from "./firebase";
 import { onAuthStateChanged } from "firebase/auth";
 import { doc, getDoc } from "firebase/firestore";
@@ -14,11 +16,12 @@ function App() {
   const [userData, setUserData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [selectedCharacter, setSelectedCharacter] = useState(null);
+  const [isRandomMatching, setIsRandomMatching] = useState(false);
+  const [currentMatch, setCurrentMatch] = useState(null);
+  const [showRandomInbox, setShowRandomInbox] = useState(false);
 
-  // 로그인 상태 감지 및 최소 로딩 시간 보장
   useEffect(() => {
     const minLoadingTime = new Promise(resolve => setTimeout(resolve, 3000));
-
     let authUnsubscribe;
     const authPromise = new Promise(resolve => {
       authUnsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
@@ -34,41 +37,51 @@ function App() {
         } else {
           setUserData(null);
         }
-        resolve(); // 인증 및 데이터 로드 완료
+        resolve();
       });
     });
-
     Promise.all([minLoadingTime, authPromise]).then(() => {
       setLoading(false);
     });
-
     return () => {
       if (authUnsubscribe) {
-        authUnsubscribe(); // 컴포넌트 언마운트 시 리스너 정리
+        authUnsubscribe();
       }
     };
   }, []);
 
-  // Login 컴포넌트에서 로그인/닉네임 입력 완료 시 콜백
-  const handleLogin = async (firebaseUser) => {
-    setUser(firebaseUser);
-    if (firebaseUser) {
-      const userRef = doc(db, "users", firebaseUser.uid);
-      const userSnap = await getDoc(userRef);
-      if (userSnap.exists()) {
-        setUserData(userSnap.data());
-      }
-    }
-  };
-
   // 캐릭터 선택 시 콜백
   const handleCharacterSelect = (characterId) => {
-    setSelectedCharacter(characterId);
+    if (characterId === 'random_matching') {
+      setShowRandomInbox(true);
+    } else {
+      setSelectedCharacter(characterId);
+    }
   };
 
   // 편지 시스템에서 돌아가기
   const handleBackToCharacterSelect = () => {
     setSelectedCharacter(null);
+    setCurrentMatch(null);
+    setShowRandomInbox(false);
+  };
+
+  // 랜덤 매칭 완료 시 콜백
+  const handleRandomMatchComplete = (matchId, otherUserNickname) => {
+    setIsRandomMatching(false);
+    setCurrentMatch({ matchId, otherUserNickname });
+    setSelectedCharacter(`random_${matchId}`);
+  };
+
+  // 랜덤 매칭 취소 시 콜백
+  const handleRandomMatchCancel = () => {
+    setIsRandomMatching(false);
+  };
+
+  // 랜덤 편지함에서 새 편지 작성하기 클릭 시
+  const handleWriteNewRandomLetter = () => {
+    setIsRandomMatching(true);
+    setShowRandomInbox(false);
   };
 
   if (loading) {
@@ -86,18 +99,33 @@ function App() {
   return (
     <Router>
       <Routes>
-        {/* 로그인 안 된 경우 */}
         {!user || !userData?.nickname ? (
-          <Route path="*" element={<Login onLogin={handleLogin} />} />
+          <Route path="*" element={<Login onLogin={setUser} />} />
         ) : userData.tutorialDone ? (
-          // 튜토리얼 완료 → 캐릭터 선택 또는 편지 시스템
-          selectedCharacter ? (
+          showRandomInbox ? (
+            <Route path="*" element={
+              <RandomInbox
+                user={user}
+                onWriteNewLetter={handleWriteNewRandomLetter}
+              />
+            } />
+          ) : isRandomMatching ? (
+            <Route path="*" element={
+              <AnonymousMatching 
+                user={user} 
+                userData={userData} 
+                onMatchComplete={handleRandomMatchComplete}
+                onCancel={handleRandomMatchCancel}
+              />
+            } />
+          ) : selectedCharacter ? (
             <Route path="*" element={
               <LetterSystem 
                 user={user} 
                 userData={userData} 
                 characterId={selectedCharacter}
                 onBack={handleBackToCharacterSelect}
+                currentMatch={currentMatch}
               />
             } />
           ) : (
@@ -110,7 +138,6 @@ function App() {
             } />
           )
         ) : (
-          // 튜토리얼 미완료 → 튜토리얼
           <Route path="*" element={<Tutorial user={user} userData={userData} />} />
         )}
       </Routes>

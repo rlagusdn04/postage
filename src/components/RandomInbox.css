@@ -1,0 +1,263 @@
+.random-inbox-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+  min-height: 100vh;
+  background: transparent;
+  color: #222;
+}
+
+.random-inbox-title {
+  text-align: center;
+  font-size: 2.2rem;
+  margin-bottom: 10px;
+  color: #357ab7;
+  text-shadow: 1px 1px 4px rgba(106, 180, 255, 0.15);
+}
+
+.random-inbox-desc {
+  text-align: center;
+  font-size: 1.1rem;
+  margin-bottom: 20px;
+  opacity: 0.85;
+}
+
+.random-inbox-actions {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 18px;
+}
+
+.random-inbox-btn {
+  background: linear-gradient(45deg, #6bc1ff, #4a90e2);
+  color: white;
+  border: none;
+  border-radius: 25px;
+  padding: 12px 24px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
+  min-width: 120px;
+  box-shadow: 0 4px 15px rgba(106, 180, 255, 0.18);
+}
+.random-inbox-btn:hover {
+  background: linear-gradient(45deg, #4a90e2, #357ab7);
+  transform: translateY(-2px);
+}
+
+.random-inbox-back-btn {
+  background: rgba(106, 180, 255, 0.15);
+  color: #357ab7;
+  border: 1px solid #b3d8fd;
+  border-radius: 25px;
+  padding: 10px 20px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
+  margin-bottom: 10px;
+}
+.random-inbox-back-btn:hover {
+  background: rgba(106, 180, 255, 0.25);
+  color: #205080;
+}
+
+.random-inbox-list {
+  background: rgba(255,255,255,0.85);
+  border-radius: 15px;
+  padding: 28px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 8px rgba(106, 180, 255, 0.08);
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.random-inbox-item {
+  padding: 14px 12px;
+  border-radius: 10px;
+  margin-bottom: 10px;
+  background: #eaf6ff;
+  cursor: pointer;
+  transition: background 0.2s, box-shadow 0.2s;
+  border: 1.5px solid transparent;
+  position: relative;
+}
+.random-inbox-item.selected {
+  background: #d0eaff;
+  border-color: #6bc1ff;
+}
+.random-inbox-item.unread {
+  font-weight: 600;
+  background: #fffbe7;
+}
+.random-inbox-item .unread-indicator {
+  position: absolute;
+  right: 16px;
+  top: 18px;
+  width: 10px;
+  height: 10px;
+  background: #ff6b6b;
+  border-radius: 50%;
+}
+
+.random-inbox-detail {
+  background: #f0f8ff;
+  border: 2px solid #b3d8fd;
+  border-radius: 12px;
+  padding: 28px;
+  margin-top: 10px;
+  box-shadow: 0 2px 8px rgba(106, 180, 255, 0.07);
+  position: relative;
+}
+
+.random-inbox-detail-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.random-inbox-close-btn {
+  background: none;
+  border: none;
+  font-size: 1.3rem;
+  color: #357ab7;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+.random-inbox-close-btn:hover {
+  color: #ff6b6b;
+}
+
+.random-inbox-paper {
+  background: #fffbe7;
+  border: 2px solid #f3e2a9;
+  border-radius: 12px;
+  padding: 28px;
+  font-family: 'Nanum Pen Script', 'Nanum Gothic', 'Noto Sans KR', Arial, sans-serif;
+  font-size: 1.22rem;
+  line-height: 1.7;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+}
+
+.random-inbox-compose-modal {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(106, 180, 255, 0.18);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+.random-inbox-compose,
+.random-inbox-compose textarea {
+  box-sizing: border-box;
+}
+
+.random-inbox-compose {
+  background: #fffbe7;
+  border: 2px solid #f3e2a9;
+  border-radius: 16px;
+  padding: 48px 40px 32px 40px; /* 더 크게 */
+  min-width: 520px;             /* 더 넓게 */
+  max-width: 99vw;
+  min-height: 400px;            /* 더 높게 */
+  box-shadow: 0 6px 32px rgba(106, 180, 255, 0.18);
+  position: relative;
+}
+@media (max-width: 700px) {
+  .random-inbox-compose {
+    padding: 16px 2vw 12px 2vw;
+    min-width: 0;
+    max-width: 100vw;
+  }
+}
+
+.random-inbox-compose textarea {
+  width: 100%;
+  min-height: 220px;   /* 더 크게 */
+  background: #f8f6e7;
+  border: 1.5px solid #f3e2a9;
+  border-radius: 10px;
+  padding: 24px;       /* 더 크게 */
+  color: #222;
+  font-size: 1.22rem;  /* 더 크게 */
+  resize: vertical;
+  margin-bottom: 15px;
+  font-family: inherit;
+}
+.random-inbox-compose textarea::placeholder {
+  color: #b3b3b3;
+}
+.random-inbox-compose-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 8px;
+}
+.random-inbox-char-count {
+  font-size: 0.95rem;
+  color: #357ab7;
+  opacity: 0.7;
+}
+.random-inbox-send-btn {
+  background: linear-gradient(45deg, #6bc1ff, #4a90e2);
+  color: white;
+  border: none;
+  border-radius: 20px;
+  padding: 8px 18px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.random-inbox-send-btn:disabled {
+  background: #ccc;
+  color: #888;
+  cursor: not-allowed;
+}
+.random-inbox-cancel-btn {
+  background: none;
+  border: 1.5px solid #b3d8fd;
+  color: #357ab7;
+  border-radius: 20px;
+  padding: 8px 18px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  margin-left: 8px;
+  transition: background 0.2s, color 0.2s;
+}
+.random-inbox-cancel-btn:hover {
+  background: #eaf6ff;
+  color: #205080;
+}
+
+.random-inbox-delete-btn {
+  background: linear-gradient(45deg, #ff7675, #d63031);
+  color: white;
+  border: none;
+  border-radius: 20px;
+  padding: 8px 18px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  margin-left: 8px;
+  margin-top: 10px;
+  transition: background 0.2s;
+}
+.random-inbox-delete-btn:hover {
+  background: linear-gradient(45deg, #d63031, #ff7675);
+}
+
+@media (max-width: 600px) {
+  .random-inbox-container {
+    padding: 8px;
+  }
+  .random-inbox-compose {
+    padding: 16px 4vw 12px 4vw;
+    min-width: 0;
+    max-width: 100vw;
+  }
+} 
