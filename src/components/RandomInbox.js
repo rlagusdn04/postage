@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import { collection, onSnapshot, doc, updateDoc, orderBy, query, setDoc, serverTimestamp, getDoc } from "firebase/firestore";
 import { db } from "../firebase";
 import "./RandomInbox.css";
+import "./AnonymousMatching.css";
+import { useNavigate } from "react-router-dom";
 
 function RandomInbox({ user, onWriteNewLetter }) {
   const [messages, setMessages] = useState([]);
@@ -11,6 +13,7 @@ function RandomInbox({ user, onWriteNewLetter }) {
   const [composeContent, setComposeContent] = useState("");
   const [composeTarget, setComposeTarget] = useState(null); // 답장 대상 메시지
   const [sending, setSending] = useState(false);
+  const navigate = useNavigate();
 
   // 랜덤 편지함 실시간 불러오기
   useEffect(() => {
@@ -95,6 +98,7 @@ function RandomInbox({ user, onWriteNewLetter }) {
 
   return (
     <div className="random-inbox-container">
+      <button className="back-btn" onClick={() => navigate("/")}>← 돌아가기</button>
       <h3 className="random-inbox-title">💌 내 랜덤 편지함</h3>
       <div className="random-inbox-desc">누군가가 당신에게 보낸 편지가 이곳에 도착합니다.</div>
       <div className="random-inbox-actions">
@@ -162,12 +166,6 @@ function RandomInbox({ user, onWriteNewLetter }) {
               💌 답장하기
             </button>
           )}
-          <button
-            className="random-inbox-back-btn"
-            onClick={() => setSelectedId(null)}
-          >
-            ← 돌아가기
-          </button>
         </div>
       )}
       {showCompose && (
