@@ -5,7 +5,7 @@ import "./RandomInbox.css";
 import "./AnonymousMatching.css";
 import { useNavigate } from "react-router-dom";
 
-function RandomInbox({ user, onWriteNewLetter }) {
+function RandomInbox({ user, onWriteNewLetter, onBack }) {
   const [messages, setMessages] = useState([]);
   const [selectedId, setSelectedId] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -14,6 +14,14 @@ function RandomInbox({ user, onWriteNewLetter }) {
   const [composeTarget, setComposeTarget] = useState(null); // 답장 대상 메시지
   const [sending, setSending] = useState(false);
   const navigate = useNavigate();
+
+  const handleBack = () => {
+    if (onBack && typeof onBack === "function") {
+      onBack();
+    } else {
+      navigate("/");
+    }
+  };
 
   // 랜덤 편지함 실시간 불러오기
   useEffect(() => {
@@ -98,7 +106,13 @@ function RandomInbox({ user, onWriteNewLetter }) {
 
   return (
     <div className="random-inbox-container">
-      <button className="back-btn" onClick={() => navigate("/")}>← 돌아가기</button>
+      <button
+        className="back-btn"
+        onClick={handleBack}
+        style={{ marginBottom: 16 }}
+      >
+        ← 돌아가기
+      </button>
       <h3 className="random-inbox-title">💌 내 랜덤 편지함</h3>
       <div className="random-inbox-desc">누군가가 당신에게 보낸 편지가 이곳에 도착합니다.</div>
       <div className="random-inbox-actions">

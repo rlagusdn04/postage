@@ -46,21 +46,24 @@
   transform: translateY(-2px);
 }
 
-.random-inbox-back-btn {
-  background: rgba(106, 180, 255, 0.15);
-  color: #357ab7;
-  border: 1px solid #b3d8fd;
+.back-btn {
+  background: linear-gradient(45deg, #b2f7c1, #7ed957);
+  color: #205020;
+  border: 2px solid #7ed957;
   border-radius: 25px;
-  padding: 10px 20px;
-  font-size: 1rem;
-  font-weight: 600;
+  padding: 12px 28px;
+  font-size: 1.1rem;
+  font-weight: 700;
   cursor: pointer;
-  transition: all 0.3s;
-  margin-bottom: 10px;
+  margin-bottom: 16px;
+  margin-top: 8px;
+  box-shadow: 0 2px 8px rgba(126, 217, 87, 0.12);
+  transition: background 0.2s, color 0.2s, border 0.2s;
 }
-.random-inbox-back-btn:hover {
-  background: rgba(106, 180, 255, 0.25);
-  color: #205080;
+.back-btn:hover {
+  background: linear-gradient(45deg, #7ed957, #4caf50);
+  color: #fff;
+  border: 2px solid #4caf50;
 }
 
 .random-inbox-list {
