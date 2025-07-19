@@ -117,13 +117,13 @@ function CharacterSelect({ user, userData, onCharacterSelect }) {
           </div>
 
           <div className="character-card">
-            <div className="character-avatar">😠</div>
-            <h3>Sen</h3>
-            <p className="character-quote">"그래서 하고 싶은 말이 뭔데?"</p>
-            <p className="character-description">당신은 이 사람을 모릅니다.</p>
+            <div className="character-avatar">☁️</div>
+            <h3>즈믄누리</h3>
+            <p className="character-quote">"언젠가 흘려보냈던 친구"</p>
+            <p className="character-description">구름처럼 스쳐간 인연, 다시 만날 수 있을까요?</p>
             <button 
               className="select-btn"
-              onClick={() => handleCharacterSelect('sen')}
+              onClick={() => handleCharacterSelect('cloud')}
             >
               편지 시작하기
             </button>

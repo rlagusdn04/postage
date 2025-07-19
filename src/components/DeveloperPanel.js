@@ -19,7 +19,9 @@ function DeveloperPanel({ userId, characterId, onClose }) {
     chet: { name: "Chet", avatar: "🎭" },
     honga: { name: "김홍아", avatar: "🏠" },
     sangsoon: { name: "sangsoon", avatar: "👨‍💻" },
-    hyunwoo: { name: "김현우", avatar: "🫨" }
+    hyunwoo: { name: "김현우", avatar: "🫨" },
+    coffee: { name: "Coffee", avatar: "☕" },
+    cloud: { name: "즈믄누리", avatar: "☁️" }
   };
   const currentCharacter = characterInfo[characterId];
 
