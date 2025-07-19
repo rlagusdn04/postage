@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { collection, onSnapshot, doc, updateDoc, orderBy, query, setDoc, serverTimestamp, getDoc } from "firebase/firestore";
+import { collection, onSnapshot, doc, updateDoc, orderBy, query, setDoc, serverTimestamp, getDoc, getDocs } from "firebase/firestore";
 import { db } from "../firebase";
 import "./RandomInbox.css";
 import { useNavigate } from "react-router-dom";
@@ -12,11 +12,22 @@ function RandomInbox({ user, onWriteNewLetter, onBack }) {
   const [composeContent, setComposeContent] = useState("");
   const [composeTarget, setComposeTarget] = useState(null); // 답장 대상 메시지
   const [sending, setSending] = useState(false);
+  const [matching, setMatching] = useState(false); // 매칭 중 상태
+  const [matchedNickname, setMatchedNickname] = useState(null); // 매칭된 상대 닉네임
+  const [matchedUserId, setMatchedUserId] = useState(null); // 매칭된 상대 uid
   const navigate = useNavigate();
+
+  // 임시 랜덤 닉네임 생성 함수
+  const randomNicknames = [
+    "푸른하늘", "노을빛", "달빛소녀", "별똥별", "초록숲", "바람결", "햇살이", "구름타고", "파도소리", "고요한밤"
+  ];
+  function getRandomNickname() {
+    return randomNicknames[Math.floor(Math.random() * randomNicknames.length)];
+  }
 
   // 돌아가기 버튼 핸들러
   const handleBack = () => {
-    navigate("/");
+    if (onBack) onBack();
   };
 
   // 랜덤 편지함 실시간 불러오기
@@ -58,6 +69,38 @@ function RandomInbox({ user, onWriteNewLetter, onBack }) {
     setShowCompose(true);
   };
 
+  // 다시 매칭 버튼 클릭 시 (실제 유저 닉네임 기반)
+  const handleRematch = async () => {
+    setMatching(true);
+    setMatchedNickname(null);
+    setMatchedUserId(null);
+    try {
+      const usersRef = collection(db, "users");
+      const snapshot = await getDocs(usersRef);
+      const others = snapshot.docs
+        .filter(docu => docu.id !== user.uid && docu.data().nickname)
+        .map(docu => ({ uid: docu.id, nickname: docu.data().nickname }));
+      if (others.length > 0) {
+        const randomUser = others[Math.floor(Math.random() * others.length)];
+        setTimeout(() => {
+          setMatchedNickname(randomUser.nickname);
+          setMatchedUserId(randomUser.uid);
+          setMatching(false);
+        }, 1200);
+      } else {
+        setTimeout(() => {
+          setMatchedNickname("상대 없음");
+          setMatchedUserId(null);
+          setMatching(false);
+        }, 1200);
+      }
+    } catch (e) {
+      setMatchedNickname("오류");
+      setMatchedUserId(null);
+      setMatching(false);
+    }
+  };
+
   // 편지 전송
   const handleSend = async () => {
     if (!composeContent.trim()) return;
@@ -87,9 +130,18 @@ function RandomInbox({ user, onWriteNewLetter, onBack }) {
           senderId: user.uid,
           senderNickname: user.displayName || "익명"
         });
-      } else {
-        // 새 편지: 랜덤 매칭 로직 (여기서는 임시로 내 편지함에만 저장)
-        // 실제 서비스에서는 매칭 대기열에 올리고, 매칭되면 상대방 편지함에 저장
+      } else if (matchedUserId) {
+        // 새 편지: 매칭된 상대방에게도 편지 저장
+        const otherRef = doc(db, "users", matchedUserId, "random_inbox", letterId);
+        await setDoc(otherRef, {
+          type: "received",
+          content: composeContent.trim(),
+          timestamp: serverTimestamp(),
+          read: false,
+          replyTo: null,
+          senderId: user.uid,
+          senderNickname: user.displayName || "익명"
+        });
       }
       setShowCompose(false);
       setComposeContent("");
@@ -114,7 +166,15 @@ function RandomInbox({ user, onWriteNewLetter, onBack }) {
         <button className="random-inbox-btn" onClick={handleNewLetter}>
           ✍️ 새 편지 작성하기
         </button>
+        <button className="random-inbox-btn" onClick={handleRematch} disabled={matching} style={{marginLeft:8}}>
+          {matching ? "🔄 매칭 중..." : "🔄 다시 매칭"}
+        </button>
       </div>
+      {matchedNickname && (
+        <div className="random-inbox-match-info">
+          <span>현재 매칭된 상대: <b>{matchedNickname}</b></span>
+        </div>
+      )}
       {loading ? (
         <div className="letter-loading">
           <div className="loading-spinner"></div>

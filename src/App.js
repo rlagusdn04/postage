@@ -7,7 +7,7 @@ import LetterSystem from "./components/LetterSystem";
 import RandomInbox from "./components/RandomInbox";
 import { auth, db } from "./firebase";
 import { onAuthStateChanged } from "firebase/auth";
-import { doc, getDoc } from "firebase/firestore";
+import { doc, getDoc, onSnapshot } from "firebase/firestore";
 import "./App.css";
 
 function App() {
@@ -22,30 +22,36 @@ function App() {
   useEffect(() => {
     const minLoadingTime = new Promise(resolve => setTimeout(resolve, 3000));
     let authUnsubscribe;
+    let userUnsubscribe;
     const authPromise = new Promise(resolve => {
-      authUnsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
+      authUnsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
         setUser(firebaseUser);
+        if (userUnsubscribe) {
+          userUnsubscribe();
+          userUnsubscribe = null;
+        }
         if (firebaseUser) {
           const userRef = doc(db, "users", firebaseUser.uid);
-          const userSnap = await getDoc(userRef);
-          if (userSnap.exists()) {
-            setUserData(userSnap.data());
-          } else {
-            setUserData(null);
-          }
+          userUnsubscribe = onSnapshot(userRef, (userSnap) => {
+            if (userSnap.exists()) {
+              setUserData(userSnap.data());
+            } else {
+              setUserData(null);
+            }
+            resolve();
+          });
         } else {
           setUserData(null);
+          resolve();
         }
-        resolve();
       });
     });
     Promise.all([minLoadingTime, authPromise]).then(() => {
       setLoading(false);
     });
     return () => {
-      if (authUnsubscribe) {
-        authUnsubscribe();
-      }
+      if (authUnsubscribe) authUnsubscribe();
+      if (userUnsubscribe) userUnsubscribe();
     };
   }, []);
 

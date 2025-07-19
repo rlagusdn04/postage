@@ -9,13 +9,21 @@ import "./LetterSystem.css";
 
 // 캐릭터별 답장 주기 (밀리초)
 const CHARACTER_REPLY_SCHEDULES = {
-  danpoong: null,        // 답장 없음
-  chet: 7 * 24 * 60 * 60 * 1000,    // 168시간 (1주일)
-  honga: 24 * 60 * 60 * 1000, // 24시간 (1일)
-  sangsoon: 3 * 24 * 60 * 60 * 1000, // 3일
-  hyunwoo: 1 * 24 * 60 * 60 * 1000, // 1일
-  coffee: 24 * 60 * 60 * 1000, // 1일
+  danpoong: 0,        // 답장 없음 (기존: null)
+  chet: 0,            // 168시간 (1주일) → 0
+  honga: 0,           // 24시간 (1일) → 0
+  sangsoon: 0,        // 3일 → 0
+  hyunwoo: 0,         // 1일 → 0
+  coffee: 0,          // 1일 → 0
   sen: 0 // 즉시
+  // 기존 값:
+  // danpoong: null,
+  // chet: 7 * 24 * 60 * 60 * 1000,
+  // honga: 24 * 60 * 60 * 1000,
+  // sangsoon: 3 * 24 * 60 * 60 * 1000,
+  // hyunwoo: 1 * 24 * 60 * 60 * 1000,
+  // coffee: 24 * 60 * 60 * 1000,
+  // sen: 0
 };
 
 // 캐릭터별 메시지 템플릿
