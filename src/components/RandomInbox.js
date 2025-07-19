@@ -63,7 +63,10 @@ function RandomInbox({ user, onWriteNewLetter, onBack }) {
   };
 
   // 새 편지 작성 버튼 클릭 시
-  const handleNewLetter = () => {
+  const handleNewLetter = async () => {
+    if (!matchedUserId) {
+      await handleRematch();
+    }
     setComposeTarget(null);
     setComposeContent("");
     setShowCompose(true);
@@ -104,6 +107,12 @@ function RandomInbox({ user, onWriteNewLetter, onBack }) {
   // 편지 전송
   const handleSend = async () => {
     if (!composeContent.trim()) return;
+    // 매칭된 상대가 없으면 전송 막기
+    if (!composeTarget && !matchedUserId) {
+      alert("먼저 상대방을 매칭해주세요!");
+      setSending(false);
+      return;
+    }
     setSending(true);
     try {
       const timestamp = Date.now();
