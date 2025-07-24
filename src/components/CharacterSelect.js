@@ -80,7 +80,7 @@ function CharacterSelect({ user, userData, onCharacterSelect }) {
           <div className="character-card">
             <div className="character-avatar">👨</div>
             <h3>상순</h3>
-            <p className="character-quote">"돈 벌 방법 어디 없소?"</p>
+            <p className="character-quote">"거기 누구 없소?"</p>
             <p className="character-description">囊中之錐.</p>
             <button 
               className="select-btn"
