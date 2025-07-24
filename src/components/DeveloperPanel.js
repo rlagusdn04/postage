@@ -15,13 +15,13 @@ function DeveloperPanel({ userId, characterId, onClose }) {
 
 
   const characterInfo = {
-    danpoong: { name: "단풍", avatar: "🍁" },
+    cloud: { name: "즈믄누리", avatar: "☁️" },
     chet: { name: "Chet", avatar: "🎭" },
+    coffee: { name: "Coffee", avatar: "☕" },
     honga: { name: "김홍아", avatar: "🏠" },
     sangsoon: { name: "sangsoon", avatar: "👨‍💻" },
     hyunwoo: { name: "김현우", avatar: "🫨" },
-    coffee: { name: "Coffee", avatar: "☕" },
-    cloud: { name: "즈믄누리", avatar: "☁️" }
+    danpoong: { name: "단풍", avatar: "🍁" },
   };
   const currentCharacter = characterInfo[characterId];
 
