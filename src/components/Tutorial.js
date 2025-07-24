@@ -107,12 +107,12 @@ function Tutorial({ user, userData, onComplete }) {
       });
       setCurrentMessageIndex(nextIndex);
       
-      // 마지막 메시지인 경우 튜토리얼 완료
-      if (nextIndex === DANPOONG_MESSAGE_TEMPLATES.length - 1) {
-        setTimeout(() => {
-          completeTutorial();
-        }, 2000);
-      }
+      // 마지막 메시지인 경우 튜토리얼 완료 (기존 코드 삭제)
+      // if (nextIndex === DANPOONG_MESSAGE_TEMPLATES.length - 1) {
+      //   setTimeout(() => {
+      //     completeTutorial();
+      //   }, 2000);
+      // }
     }
   };
 
@@ -141,6 +141,12 @@ function Tutorial({ user, userData, onComplete }) {
     
     // 단풍의 자동 답장 생성
     await createDanpoongReply();
+    // 마지막 메시지에 답장한 경우 튜토리얼 완료
+    if (currentMessageIndex + 1 === DANPOONG_MESSAGE_TEMPLATES.length - 1) {
+      setTimeout(() => {
+        completeTutorial();
+      }, 2000);
+    }
   };
 
   // 튜토리얼 완료 처리
