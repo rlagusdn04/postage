@@ -77,7 +77,7 @@ function CharacterSelect({ user, userData, onCharacterSelect }) {
             </button>
           </div>
 
-          <div className="character-card">
+          {/* <div className="character-card">
             <div className="character-avatar">👨</div>
             <h3>상순</h3>
             <p className="character-quote">"거기 누구 없소?"</p>
@@ -88,7 +88,7 @@ function CharacterSelect({ user, userData, onCharacterSelect }) {
             >
               편지 시작하기
             </button>
-          </div>
+          </div> */}
 
           <div className="character-card">
             <div className="character-avatar">🤝</div>
